@@ -3,9 +3,9 @@
     "name": "Auto Discord Mute",
     "version": "1.0.0",
     "developer": "YourName",
-    "entry": "src/main.cpp",  // Путь к основному файлу мода
+    "entry": "src/main.cpp",  //
     "dependencies": {
-        "geode.core": "*",  // Обязательная зависимость Geode
-        "com.techstudent10.discordrpc": "*"  // Зависимость от Discord RPC
+        "geode.core": "*",  
+        "com.techstudent10.discordrpc": "*"  
     }
 }
