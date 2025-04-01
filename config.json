@@ -1,0 +1,76 @@
+#include <Geode/Geode.hpp>
+#include <Geode/modify/PlayLayer.hpp>
+#include <Geode/modify/AlertDialog.hpp>
+#include <Geode/ui/Elements.hpp>
+#include <fstream>
+#include <json/json.h>
+
+using namespace geode::prelude;
+
+// Считывание порога из конфигурации
+int getMuteThreshold() {
+    std::ifstream configFile("config.json");
+    Json::Value config;
+    configFile >> config;
+    return config["muteThreshold"].asInt();  // Читаем порог
+}
+
+// Запись порога в конфигурацию
+void saveMuteThreshold(int threshold) {
+    Json::Value config;
+    config["muteThreshold"] = threshold;
+
+    std::ofstream configFile("config.json");
+    configFile << config;
+}
+
+// Интерфейс для настройки порога
+class MuteThresholdDialog : public geode::ui::AlertDialog {
+public:
+    MuteThresholdDialog()
+        : AlertDialog("Настройка порога для отключения Discord", "Введите порог в процентах (0-100):") {
+        
+        auto inputField = geode::ui::TextInput::create();
+        inputField->setText(std::to_string(getMuteThreshold()));  // Устанавливаем текущий порог
+        inputField->setPosition(100, 50);
+        
+        auto saveButton = geode::ui::Button::create("Сохранить", [this, inputField]() {
+            int threshold = std::stoi(inputField->getText());
+            if (threshold >= 0 && threshold <= 100) {
+                saveMuteThreshold(threshold);  // Сохраняем новый порог
+                this->dismiss();
+            } else {
+                geode::ui::AlertDialog::show("Ошибка", "Порог должен быть от 0 до 100.");
+            }
+        });
+        saveButton->setPosition(100, 100);
+
+        this->addChild(inputField);
+        this->addChild(saveButton);
+    }
+};
+
+// Включаем диалог в игре для настроек
+class $modify(PlayLayer) {
+    void updateProgressbar() {
+        PlayLayer::updateProgressbar();
+        
+        int percent = static_cast<int>(this->m_levelPercent);
+        static bool isMuted = false;
+        int muteThreshold = getMuteThreshold();  // Читаем порог из конфигурации
+
+        if (percent >= muteThreshold && !isMuted) {
+            sendDiscordMute(true);
+            isMuted = true;
+        } else if (percent < muteThreshold && isMuted) {
+            sendDiscordMute(false);
+            isMuted = false;
+        }
+    }
+
+    void onMenuButtonPressed() {
+        // Открытие диалога для настройки порога
+        auto dialog = MuteThresholdDialog();
+        dialog.show();
+    }
+};
