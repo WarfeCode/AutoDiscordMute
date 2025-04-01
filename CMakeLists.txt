@@ -1,11 +1,11 @@
-{
-    "id": "your.mod.id",
-    "name": "Auto Discord Mute",
-    "version": "1.0.0",
-    "developer": "YourName",
-    "entry": "src/main.cpp",  // 
-    "dependencies": {
-        "geode.core": "*",  // 
-        "com.techstudent10.discordrpc": "*"  // 
-    }
-}
+cmake_minimum_required(VERSION 3.16)
+project(AutoDiscordMute)
+
+# Ищем Geode SDK
+find_package(Geode REQUIRED)
+
+# Создаём библиотеку для мода
+add_library(${PROJECT_NAME} SHARED src/main.cpp)
+
+# Линкуем с Geode
+target_link_libraries(${PROJECT_NAME} Geode)
