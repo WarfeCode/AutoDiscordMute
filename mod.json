@@ -1,8 +1,20 @@
 {
-  "name": "Auto Discord Mute",
-  "author": "WrWarfe",
-  "description": "test",
-  "version": "1.0.0",
-  "target_loader_version": "[v]4.3.1", 
-  "dependencies": []
+	"geode": "4.3.1",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	}
+	"version": "v1.0.0", 
+	"id": "Auto-Discor-dMute",
+	"name": "Auto Discord Mute",
+	"developer": "WrWarfe",
+	"description": "If you encounter an issue related to node ID mismatches, please report it to the GitHub issues page",
+	"links": {
+		"source": "https://github.com/WarfeCode/AutoDiscordMute"
+	},
+	"issues": {
+		"info": "If you encounter an issue related to node ID mismatches, please report it to the GitHub issues page."
+	}
 }
