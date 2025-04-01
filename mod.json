@@ -1,11 +1,8 @@
 {
-    "id": "AutoDiscordMute",
-    "name": "Auto Discord Mute",
-    "version": "1.0.0",
-    "developer": "WrWarfe",
-    "entry": "src/main.cpp",
-    "dependencies": {
-        "geode.core": "*",
-        "com.techstudent10.discordrpc": "*"
-    }
+  "name": "Auto Discord Mute",
+  "author": "WrWarfe",
+  "description": "test",
+  "version": "1.0.0",
+  "target_loader_version": "[v]4.3.1", 
+  "dependencies": []
 }
