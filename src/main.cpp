@@ -5,15 +5,15 @@
 
 using namespace geode::prelude;
 
-// Чтение порога из конфигурации
+// Read the mute threshold from the config
 int getMuteThreshold() {
     std::ifstream configFile("config.json");
     Json::Value config;
     configFile >> config;
-    return config["muteThreshold"].asInt();  // Читаем порог
+    return config["muteThreshold"].asInt();  // Get the threshold
 }
 
-// Сохранение порога в конфигурационный файл
+// Save the mute threshold to the config file
 void saveMuteThreshold(int threshold) {
     Json::Value config;
     config["muteThreshold"] = threshold;
@@ -25,27 +25,27 @@ void saveMuteThreshold(int threshold) {
 class MuteThresholdDialog : public geode::ui::AlertDialog {
 public:
     MuteThresholdDialog()
-        : AlertDialog("Настройка порога для отключения Discord", "Введите порог в процентах (0-100):") {
+        : AlertDialog("Mute Threshold Settings", "Enter the threshold percentage (0-100):") {
 
-        // Создание текстового поля для ввода порога
+        // Create text input for the mute threshold
         auto inputField = geode::ui::TextInput::create();
-        inputField->setText(std::to_string(getMuteThreshold()));  // Устанавливаем текущий порог
-        inputField->setPosition(100, 50);  // Позиция текстового поля
+        inputField->setText(std::to_string(getMuteThreshold()));  // Set the current threshold
+        inputField->setPosition(100, 50);  // Position of the text input field
 
-        // Создание кнопки для сохранения
-        auto saveButton = geode::ui::Button::create("Сохранить", [this, inputField]() {
-            int threshold = std::stoi(inputField->getText());  // Получаем введённый текст
+        // Create a save button
+        auto saveButton = geode::ui::Button::create("Save", [this, inputField]() {
+            int threshold = std::stoi(inputField->getText());  // Get the entered text
             if (threshold >= 0 && threshold <= 100) {
-                saveMuteThreshold(threshold);  // Сохраняем порог
-                this->dismiss();  // Закрываем диалог
+                saveMuteThreshold(threshold);  // Save the threshold
+                this->dismiss();  // Close the dialog
             } else {
-                geode::ui::AlertDialog::show("Ошибка", "Порог должен быть от 0 до 100.");
+                geode::ui::AlertDialog::show("Error", "The threshold must be between 0 and 100.");
             }
         });
-        saveButton->setPosition(100, 100);  // Позиция кнопки
+        saveButton->setPosition(100, 100);  // Position of the save button
 
-        this->addChild(inputField);  // Добавляем поле ввода в диалог
-        this->addChild(saveButton);  // Добавляем кнопку в диалог
+        this->addChild(inputField);  // Add the text input to the dialog
+        this->addChild(saveButton);  // Add the save button to the dialog
     }
 };
 
@@ -55,20 +55,20 @@ class $modify(PlayLayer) {
         
         int percent = static_cast<int>(this->m_levelPercent);
         static bool isMuted = false;
-        int muteThreshold = getMuteThreshold();  // Читаем порог из конфигурации
+        int muteThreshold = getMuteThreshold();  // Get the threshold from the config
 
         if (percent >= muteThreshold && !isMuted) {
-            sendDiscordMute(true);
+            sendDiscordMute(true);  // Mute Discord
             isMuted = true;
         } else if (percent < muteThreshold && isMuted) {
-            sendDiscordMute(false);
+            sendDiscordMute(false);  // Unmute Discord
             isMuted = false;
         }
     }
 
-    // Функция для вызова диалога с настройками
+    // Function to open the settings dialog
     void onMenuButtonPressed() {
-        // Открытие диалога для настройки порога
+        // Show the mute threshold settings dialog
         auto dialog = MuteThresholdDialog();
         dialog.show();
     }
